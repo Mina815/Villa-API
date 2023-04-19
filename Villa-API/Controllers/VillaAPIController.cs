@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Villa_API.Data;
 using Villa_API.Models;
 using Villa_API.Models.Dto;
 
@@ -11,10 +12,7 @@ namespace Villa_API.Controllers
 		[HttpGet]
 		public IEnumerable<VillaDTO> VillaList()
 		{
-			return new List<VillaDTO>() {
-				new VillaDTO { Id = 1, Name = "Villa1" },
-				new VillaDTO { Id = 2, Name = "Villa2" },
-			};
+			return VillaStore.VillaList;
 		}
 	}
 }
