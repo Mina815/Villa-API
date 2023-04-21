@@ -36,7 +36,12 @@ namespace Villa_API.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		public ActionResult<VillaDTO> CreateVilla(VillaDTO Villa)
 		{
-			//if(!ModelState.IsValid) return BadRequest(Villa);
+			//if(!ModelState.IsValid) return BadRequest(ModelState);
+			if(VillaStore.VillaList.FirstOrDefault(u=> u.Name.ToLower() == Villa.Name)!= null)
+			{
+				ModelState.AddModelError("CustomError", "Villa name is already exsists");
+				return BadRequest(ModelState);
+			}
 			if(Villa == null) return BadRequest(Villa);
 			if(Villa.Id > 0) return StatusCode(StatusCodes.Status500InternalServerError);
 
