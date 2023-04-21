@@ -30,11 +30,12 @@ namespace Villa_API.Controllers
 			if(villa == null) return NotFound();
 			return villa;
 		}
+
 		[HttpPost]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status201Created)]
-		public ActionResult<VillaDTO> CreateVilla(VillaDTO Villa)
+		public ActionResult<VillaDTO> CreateVilla([FromBody]VillaDTO Villa)
 		{
 			//if(!ModelState.IsValid) return BadRequest(ModelState);
 			if(VillaStore.VillaList.FirstOrDefault(u=> u.Name.ToLower() == Villa.Name)!= null)
@@ -49,6 +50,7 @@ namespace Villa_API.Controllers
 			VillaStore.VillaList.Add(Villa);
 			return CreatedAtRoute("GetVilla",new {id = Villa.Id},Villa);
 		}
+
 		[HttpDelete("{id:int}", Name = "DeleteVilla")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,6 +61,18 @@ namespace Villa_API.Controllers
 			var villa = VillaStore.VillaList.FirstOrDefault(u => u.Id == id);
 			if (villa == null) return NotFound();
 			VillaStore.VillaList.Remove(villa);
+			return NoContent();
+		}
+		[HttpPut("{id:int}", Name = "UpdateVilla")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult UpdateVilla(int id , [FromBody] VillaDTO villaDTO)
+		{
+			if(id == 0 || villaDTO == null) return BadRequest();
+			var villa = VillaStore.VillaList.FirstOrDefault(u=>u.Id == id);
+			villa.Name = villaDTO.Name;
+			villa.Sqft = villaDTO.Sqft;
+			villa.occupency = villaDTO.occupency;
 			return NoContent();
 		}
 	}
