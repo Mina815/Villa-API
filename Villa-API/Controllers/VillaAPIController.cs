@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Villa_API.Data;
 using Villa_API.Models;
@@ -70,9 +71,23 @@ namespace Villa_API.Controllers
 		{
 			if(id == 0 || villaDTO == null) return BadRequest();
 			var villa = VillaStore.VillaList.FirstOrDefault(u=>u.Id == id);
+			if (villa == null) return NotFound();
 			villa.Name = villaDTO.Name;
 			villa.Sqft = villaDTO.Sqft;
 			villa.occupency = villaDTO.occupency;
+			return NoContent();
+		}
+		[HttpPatch("{id:int}", Name = "UpdatePartialVilla")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaDTO> VillaPatch)
+		{
+			if(id == 0 ||  VillaPatch == null) return BadRequest();
+			var villa = VillaStore.VillaList.FirstOrDefault(u => u.Id == id);
+			if (villa == null) return NotFound();
+			VillaPatch.ApplyTo(villa,ModelState);
+			if(!ModelState.IsValid)return BadRequest(ModelState);
 			return NoContent();
 		}
 	}
