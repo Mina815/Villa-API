@@ -49,5 +49,17 @@ namespace Villa_API.Controllers
 			VillaStore.VillaList.Add(Villa);
 			return CreatedAtRoute("GetVilla",new {id = Villa.Id},Villa);
 		}
+		[HttpDelete("{id:int}", Name = "DeleteVilla")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public IActionResult DeleteVilla(int id)
+		{
+			if(id == 0) return BadRequest();
+			var villa = VillaStore.VillaList.FirstOrDefault(u => u.Id == id);
+			if (villa == null) return NotFound();
+			VillaStore.VillaList.Remove(villa);
+			return NoContent();
+		}
 	}
 }
