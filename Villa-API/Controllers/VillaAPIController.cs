@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Villa_API.Data;
+using Villa_API.Logging;
 using Villa_API.Models;
 using Villa_API.Models.Dto;
 
@@ -12,9 +13,16 @@ namespace Villa_API.Controllers
 	[ApiController]
 	public class VillaAPIController : ControllerBase
 	{
-		[HttpGet]
-		public ActionResult<IEnumerable<VillaDTO>> VillaList()
+		//private readonly ILogger<VillaAPIController> _logger;
+		private readonly ILogging _logger;
+		public VillaAPIController(ILogging logger)
+        {
+			_logger = logger;
+        }
+        [HttpGet]
+		public ActionResult<IEnumerable<VillaDTO>> GetVillaList()
 		{
+			_logger.Log("Getting all villas","");
 			return Ok(VillaStore.VillaList);
 		}
 
@@ -58,7 +66,11 @@ namespace Villa_API.Controllers
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult DeleteVilla(int id)
 		{
-			if(id == 0) return BadRequest();
+			if (id == 0)
+			{
+				_logger.Log("Bad request! Id can't be "+id,"Error");
+				return BadRequest();
+			}
 			var villa = VillaStore.VillaList.FirstOrDefault(u => u.Id == id);
 			if (villa == null) return NotFound();
 			VillaStore.VillaList.Remove(villa);
