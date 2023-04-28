@@ -57,7 +57,6 @@ namespace Villa_API.Controllers
 			{
 				Amenity = villaDTO.Amenity,
 				Details = villaDTO.Details,
-				Id = villaDTO.Id,
 				ImageUrl = villaDTO.ImageUrl,
 				Name = villaDTO.Name,
 				Occupancy = villaDTO.Occupancy,
@@ -82,6 +81,7 @@ namespace Villa_API.Controllers
 			var villa = _db.villas.FirstOrDefault(u => u.Id == id);
 			if (villa == null) return NotFound();
 			_db.villas.Remove(villa);
+			_db.SaveChanges();
 			return NoContent();
 		}
 		[HttpPut("{id:int}", Name = "UpdateVilla")]
