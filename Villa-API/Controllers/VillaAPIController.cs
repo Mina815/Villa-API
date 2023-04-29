@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Villa_API.Data;
 using Villa_API.Logging;
 using Villa_API.Models;
@@ -117,7 +118,7 @@ namespace Villa_API.Controllers
 		public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaDTO> VillaPatch)
 		{
 			if(id == 0 ||  VillaPatch == null) return BadRequest();
-			var villa = _db.villas.FirstOrDefault(u => u.Id == id);
+			var villa = _db.villas.AsNoTracking().FirstOrDefault(u => u.Id == id);
 			VillaDTO villaDTO = new()
 			{
 				Amenity = villa.Amenity,
